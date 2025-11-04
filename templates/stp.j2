@@ -1,0 +1,17 @@
+{# template para per vlan spanning tree protocol #}
+!
+spanning-tree mode pvst
+!
+{% if stp.device_role == "core" -%}
+{% for vlan, role in stp.stp_roles.items() -%}
+spanning-tree vlan {{ vlan }} root {{ role }}
+{% endfor -%}
+!
+{% elif stp.device_role == "access" -%}
+spanning-tree vlan 10 priority 61440
+spanning-tree vlan 20 priority 61440
+spanning-tree vlan 30 priority 61440
+! 
+!
+{% endif -%}
+

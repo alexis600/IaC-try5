@@ -1,0 +1,22 @@
+{# interface port-channel template #}
+
+{% for intf in interfaces %}
+{% if intf.name.startswith('Po') %}
+ interface {{ intf.name }}
+ description {{ intf.description | default('Po Po interface') }}
+{% if intf.status == 'up' %}
+ no shutdown
+{% else %}
+ shutdown
+{% endif %}
+!
+{# members #}
+{% if intf.members is defined and intf.members | length > 0 -%}
+    {% for member in intf.members %}
+    interface {{ member }}
+     channel-group {{ intf.name[2:] }} mode {{ intf.channel_mode | default('active') }}      
+    {% endfor %}    
+{% endif %}
+!
+{% endif %}    
+{% endfor %}

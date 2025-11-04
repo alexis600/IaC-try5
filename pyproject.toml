@@ -1,0 +1,11 @@
+[project]
+name = "iac-try5"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "jinja2>=3.1.6",
+    "netmiko>=4.6.0",
+    "pyyaml>=6.0.3",
+]

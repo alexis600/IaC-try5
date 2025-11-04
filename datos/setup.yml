@@ -1,0 +1,27 @@
+modelo:
+  estructura:
+    metadata:
+      proyecto: "IaC-try5"
+      author: "Alexis Sape"
+      date: "2025-11"
+    infra:
+      - hostname: SW-CORE_1
+        connection:
+          device_type: "cisco_ios_telnet"
+          host: "192.168.1.51"
+      - hostname: SW-CORE_2
+        connection:
+          device_type: "cisco_ios_telnet"
+          host: "192.168.1.52"
+      - hostname: SW-Bld_A
+        connection:
+          device_type: "cisco_ios_telnet"
+          host: "192.168.1.53"
+      - hostname: SW-Bld_B
+        connection:
+          device_type: "cisco_ios_telnet"
+          host: "192.168.1.54"
+      - hostname: SW-Datacenter
+        connection:
+          device_type: "cisco_ios_telnet"
+          host:  "192.168.1.55"

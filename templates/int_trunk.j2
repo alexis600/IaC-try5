@@ -1,0 +1,23 @@
+{# template para trunkete #}
+!
+{% for intf in interfaces %}
+{% if intf.switchport is defined
+    and "no switchport" not in intf.switchport
+    and ("dynamic" in intf.switchport or "trunk" in intf.switchport) -%}
+interface {{ intf.name }}
+ description {{ intf.description | default('Dynamic Trunking') }}
+ switchport trunk encapsulation dot1q
+ switchport mode {{ intf.switchport }}
+{%- if intf.allowed_vlans is defined %}
+ switchport trunk allowed vlan {{ intf.allowed_vlans }}
+{% endif %}
+!
+{% if intf.status is defined and intf.status == "up" -%}
+ no shutdown
+{% else %}
+ shutdown
+{% endif -%}
+!
+{% endif -%}
+{% endfor -%}
+

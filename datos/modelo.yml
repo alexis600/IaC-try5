@@ -1,0 +1,371 @@
+modelo:
+  estructura:
+    metadata:
+      proyecto: "IaC-try5"
+      author: "Alexis Sape"
+      date: "2025-11"
+    infra:
+      - hostname: SW-CORE_1
+        mgmt_ip: "192.168.1.51"
+        mask: "255.255.255.0"
+        location: "Legacy Data Center"
+        connection:
+          device_type: "cisco_ios"
+          host: "192.168.1.51"
+          username: "admin"
+          password: "eve"
+          global_delay_factor: 1
+        interfaces:
+          - name: Gi0/0
+            switchport: "no switchport"
+            ip: "192.168.1.51"
+            status: up
+            description: "Uplink to cloud"
+          - name: Po1
+            switchport: "dynamic auto"
+            allowed_vlans: "10,20,30"
+            status: up
+            description: "Link to SW-CORE_2"
+            members:
+              - Gi1/0
+              - Gi1/1
+          - name: Gi0/1
+            switchport: "dynamic auto"
+            allowed_vlans: "10,20,30"
+            description: "Link to Building A"
+            status: up
+          - name: Gi0/2
+            switchport: "dynamic auto"
+            allowed_vlans: "10,20,30"
+            description: "Link to Building B"
+            status: up
+          - name: Gi0/3
+            switchport: "dynamic auto"
+            allowed_vlans: "10,20,30"
+            description: "Link to Datacenter"
+            status: up
+        vlans:
+          - id: 10
+            name: "Ingenieria"
+          - id: 20
+            name: "Produccion"
+          - id: 30
+            name: "Finanzas"
+        stp:
+          mode: "pvst"
+          device_role: "core"
+          stp_roles:
+            10: "primary"
+            20: "secondary"
+            30: "primary"
+        config_spec:
+          - data_path: "vlans"
+            template: "vlans.j2"
+            config_file: "vlan.cfg"
+            order: 1
+          - data_path: "interfaces"
+            template: "port-channel.j2"
+            config_file: "port-channel.cfg"
+            order: 2
+          - data_path: "interfaces"
+            template: "int_trunk.j2"
+            config_file: "int_trunk.cfg"
+            order: 3
+          - data_path: "interfaces"
+            template: "int_access.j2"
+            config_file: "int_access.cfg"
+            order: 4
+          - data_path: "stp"
+            template: "stp.j2"
+            config_file: "stp.cfg"
+            order: 5
+      - hostname: SW-CORE_2
+        mgmt_ip: "192.168.1.52"
+        mask: "255.255.255.0"
+        location: "Legacy Data Center"
+        connection:
+          device_type: "cisco_ios"
+          host: "192.168.1.52"
+          username: "admin"
+          password: "eve"
+          global_delay_factor: 1
+        interfaces:
+          - name: Gi0/0
+            switchport: "no switchport"
+            ip: "192.168.1.52"
+            status: up
+            description: "Uplink to cloud"
+          - name: Po1
+            switchport: "dynamic auto"
+            allowed_vlans: "10,20,30"
+            status: up
+            description: "Link to SW-CORE_1"
+            members:
+              - Gi1/0
+              - Gi1/1
+          - name: Gi0/2
+            switchport: "dynamic auto"
+            allowed_vlans: "10,20,30"
+            description: "Link to Building A"
+            status: up
+          - name: Gi0/1
+            switchport: "dynamic auto"
+            allowed_vlans: "10,20,30"
+            description: "Link to Building B"
+            status: up
+          - name: Gi0/3
+            switchport: "dynamic auto"
+            allowed_vlans: "10,20,30"
+            description: "Link to Datacenter"
+            status: up          
+        vlans:
+          - id: 10
+            name: "Ingenieria"
+          - id: 20
+            name: "Produccion"
+          - id: 30
+            name: "Finanzas"
+        stp:
+          mode: "pvst"
+          device_role: "core"
+          stp_roles:
+            10: "secondary"
+            20: "primary"
+            30: "secondary"
+        config_spec:
+          - data_path: "vlans"
+            template: "vlans.j2"
+            config_file: "vlan.cfg"
+            order: 1
+          - data_path: "interfaces"
+            template: "port-channel.j2"
+            config_file: "port-channel.cfg"
+            order: 2
+          - data_path: "interfaces"
+            template: "int_trunk.j2"
+            config_file: "int_trunk.cfg"
+            order: 3
+          - data_path: "interfaces"
+            template: "int_access.j2"
+            config_file: "int_access.cfg"
+            order: 4
+          - data_path: "stp"
+            template: "stp.j2"
+            config_file: "stp.cfg"
+            order: 5
+      - hostname: "SW-Bld_A"
+        mgmt_ip: "192.168.1.53"
+        mask: "255.255.255.0"
+        location: "Building A"
+        connection:
+          device_type: "cisco_ios"
+          host: "192.168.1.53"
+          username: "admin"
+          password: "eve"
+          global_delay_factor: 1
+        interfaces:
+          - name: Gi0/0
+            switchport: "no switchport"
+            ip: "192.168.1.53"
+            status: up
+            description: "Uplink to cloud"
+          - name: Gi0/1
+            switchport: "dynamic desirable"
+            allowed_vlans: "10,20,30"
+            description: "Link to SW-CORE_1"
+            status: up
+          - name: Gi0/2
+            switchport: "dynamic desirable"
+            allowed_vlans: "10,20,30"
+            description: "Link to SW-CORE_2"
+            status: up
+          - name: Gi1/0
+            switchport: "access"
+            access_vlan: 10
+            description: "Workstations Ingenieria"
+            status: up
+          - name: Gi1/1
+            switchport: "access"
+            access_vlan: 10
+            description: "Workstations Ingenieria"
+            status: up
+          - name: Gi1/2
+            switchport: "access"
+            access_vlan: 10
+            description: "Workstations Ingenieria"
+            status: up
+          - name: Gi1/3
+            switchport: "access"
+            access_vlan: 10
+            description: "Workstations Ingenieria"
+            status: up
+        vlans:
+          - id: 10
+            name: "Ingenieria"
+          - id: 20
+            name: "Produccion"
+          - id: 30
+            name: "Finanzas"
+        stp:
+          mode: "pvst"
+          device_role: "access"
+        config_spec:
+          - data_path: "vlans"
+            template: "vlans.j2"
+            config_file: "vlan.cfg"
+            order: 1
+          - data_path: "interfaces"
+            template: "int_trunk.j2"
+            config_file: "int_trunk.cfg"
+            order: 2
+          - data_path: "interfaces"
+            template: "int_access.j2"
+            config_file: "int_access.cfg"
+            order: 3
+          - data_path: "stp"
+            template: "stp.j2"
+            config_file: "stp.cfg"
+            order: 4
+      - hostname: "SW-Bld_B"
+        mgmt_ip: "192.168.1.54"
+        mask: "255.255.255.0"
+        location: "Building B"
+        connection:
+          device_type: "cisco_ios"
+          host: "192.168.1.54"
+          username: "admin" 
+          password: "eve"
+          global_delay_factor: 1
+        interfaces:
+          - name: Gi0/0
+            switchport: "no switchport"
+            ip: "192.168.1.54"
+            status: up  
+            description: "Uplink to cloud"
+          - name: Gi0/1
+            switchport: "dynamic desirable"
+            allowed_vlans: "10,20,30"
+            description: "Link to SW-CORE_1"
+            status: up
+          - name: Gi0/2
+            switchport: "dynamic desirable"
+            allowed_vlans: "10,20,30"
+            description: "Link to SW-CORE_2"
+            status: up
+          - name: Gi1/0
+            switchport: "access"
+            access_vlan: 20
+            description: "Workstations Produccion"
+            status: up
+          - name: Gi1/1
+            switchport: "access"
+            access_vlan: 20
+            description: "Workstations Produccion"
+            status: up
+          - name: Gi1/2
+            switchport: "access"
+            access_vlan: 20
+            description: "Workstations Produccion"
+            status: up
+          - name: Gi1/3
+            switchport: "access"
+            access_vlan: 20
+            description: "Workstations Produccion"
+            status: up
+        vlans:
+          - id: 10
+            name: "Ingenieria"
+          - id: 20
+            name: "Produccion"
+          - id: 30
+            name: "Finanzas"
+        stp:
+          mode: "pvst"
+          device_role: "access"
+        config_spec:
+          - data_path: "vlans"
+            template: "vlans.j2"
+            config_file: "vlan.cfg"
+          - data_path: "interfaces"
+            template: "int_trunk.j2"
+            config_file: "int_trunk.cfg"
+          - data_path: "interfaces"
+            template: "int_access.j2"
+            config_file: "int_access.cfg"
+          - data_path: "stp"
+            template: "stp.j2"
+            config_file: "stp.cfg"
+            order: 4
+      - hostname: "SW-Data_Center"
+        mgmt_ip: "192.168.1.55"
+        mask: "255.255.255.0"
+        location: "Data Center"
+        connection:
+          device_type: "cisco_ios"
+          host: "192.168.1.55"
+          username: "admin"
+          password: "eve"
+          global_delay_factor: 1
+        interfaces:
+          - name: Gi0/0
+            switchport: "no switchport"
+            ip: "192.168.1.55"
+            status: up
+            description: "Uplink to cloud"
+          - name: Gi0/1
+            switchport: "dynamic desirable"
+            allowed_vlans: "10,20,30"
+            description: "Link to SW-CORE_1"
+            status: up
+          - name: Gi0/2
+            switchport: "dynamic desirable"
+            allowed_vlans: "10,20,30"
+            description: "Link to SW-CORE_2"
+            status: up
+          - name: Gi1/0
+            switchport: "access"
+            access_vlan: 30
+            description: "Workstations Datacenter"
+            status: up
+          - name: Gi1/1
+            switchport: "access"
+            access_vlan: 30
+            description: "Workstations Datacenter"
+            status: up
+          - name: Gi1/2
+            switchport: "access"
+            access_vlan: 30
+            description: "Workstations Datacenter"
+            status: up
+          - name: Gi1/3
+            switchport: "access"
+            access_vlan: 30
+            description: "Workstations Datacenter"
+            status: up
+        vlans:
+          - id: 10
+            name: "Ingenieria"
+          - id: 20
+            name: "Produccion"
+          - id: 30
+            name: "Finanzas"
+        stp:
+          mode: "pvst"
+          device_role: "access"
+        config_spec:
+          - data_path: "vlans"
+            template: "vlans.j2"
+            config_file: "vlan.cfg"
+            order: 1
+          - data_path: "interfaces"
+            template: "int_trunk.j2"
+            config_file: "int_trunk.cfg"
+            order: 2
+          - data_path: "interfaces"
+            template: "int_access.j2"
+            config_file: "int_access.cfg"
+            order: 3
+          - data_path: "stp"
+            template: "stp.j2"
+            config_file: "stp.cfg"
+            order: 4

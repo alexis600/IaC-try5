@@ -1,0 +1,14 @@
+{# template para accessar #}
+!
+{% for intf in interfaces %}
+{% if intf.switchport is defined
+    and "no switchport" not in intf.switchport
+    and ("access" in intf.switchport) %}
+ interface {{ intf.name }}
+ description {{ intf.description | default('Dynamic Access') }}
+ switchport mode {{ intf.switchport }}
+ switchport access vlan {{ intf.access_vlan }}
+!
+!
+{% endif %}
+{% endfor %}

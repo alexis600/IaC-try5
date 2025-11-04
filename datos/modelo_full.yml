@@ -1,0 +1,23 @@
+
+
+
+
+
+
+
+
+
+
+
+
+            
+          - name: Gi1/1
+            switchport: "access"
+            access_vlan: 10
+            description: "Workstations Ingenieria"
+            status: up
+          - name: Gi1/2
+            switchport: "access"
+            access_vlan: 10
+            description: "Workstations Ingenieria"
+            status: up
