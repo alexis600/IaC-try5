@@ -2,12 +2,21 @@ from class_create_config import CreateConfig
 from class_device_config import ConfigDevice
 import json, os
 from datetime import datetime
+# Intento importar el mini editor server
+from mini_editor_server import ModelEditorServer
 
 
 def main():
     print("Hello from iac-try5! \n Starting coso...")
     creador = CreateConfig()
     configurador = ConfigDevice()
+    
+       # ---- Lanzar editor web ----
+    print("lanzando editor")
+    editor = ModelEditorServer(yaml_path='./datos/modelo.yml')
+    connections = editor.run(host='127.0.0.1', port=5000, open_browser=True)
+    print("Editor cerrado. Conexiones devueltas por editor:", connections)
+    # ----------------------------
 
     # Leer el modelo YAML
     dic_modelo = creador.read_yaml('./datos/modelo.yml')
